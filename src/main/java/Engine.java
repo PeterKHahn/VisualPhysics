@@ -15,20 +15,23 @@ public class Engine extends Canvas implements Runnable{
 
     public boolean running = false;
     private int tickCount = 0;
+    boolean keyHeld = false;
+
+    private KeyHandler kh;
 
     private JFrame frame;
     private BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
     private int[]pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
     private Random rand = new Random();
 
-    private LinkedList<Ball>ballPit = new LinkedList<Ball>();
+    private LinkedList<Ball>ballPit = new LinkedList<>();
 
     public Engine(){
         setMinimumSize(new Dimension(WIDTH,HEIGHT));
         setMaximumSize(new Dimension(WIDTH,HEIGHT));
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
-        frame = new JFrame("Physics");
+        frame = new JFrame("Physics Engine");
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
@@ -39,6 +42,8 @@ public class Engine extends Canvas implements Runnable{
         frame.setResizable(true);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+
+        kh = new KeyHandler(this);
 
     }
     public synchronized void start(){
@@ -56,7 +61,6 @@ public class Engine extends Canvas implements Runnable{
         int ticks = 0;
         int frames = 0;
 
-        long lastTimer = System.currentTimeMillis();
         double delta = 0;
 
         while(running){
@@ -79,11 +83,13 @@ public class Engine extends Canvas implements Runnable{
     }
     public void tick(){
 
-        if(tickCount % 20 == 0){
-            int x = rand.nextInt(WIDTH/2)+(WIDTH/4);
-            int y = rand.nextInt(HEIGHT/2)+(HEIGHT/4);
-            int xVel = rand.nextInt(10)+1;
-            int yVel = rand.nextInt(10)+1;
+        if(keyHeld){
+            //int x = rand.nextInt(WIDTH/2)+(WIDTH/4);
+            int x = WIDTH/2;
+            int y = HEIGHT/2;
+            //int y = rand.nextInt(HEIGHT/2)+(HEIGHT/4);
+            int xVel = rand.nextInt(10)-5;
+            int yVel = rand.nextInt(20)+10;
             ballPit.add(new Ball(x, y, xVel, yVel));
         }
         tickCount++;

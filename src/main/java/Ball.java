@@ -26,6 +26,6 @@ public class Ball {
         this.x += xVel;
         this.y +=yVel;
 
-        //this.yVel += yAcc;
+        this.yVel += yAcc;
     }
 }
