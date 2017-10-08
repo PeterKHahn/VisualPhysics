@@ -15,7 +15,11 @@ public class Engine extends Canvas implements Runnable{
 
     public boolean running = false;
     private int tickCount = 0;
+
     boolean keyHeld = false;
+    Color[]ca = {Color.RED, Color.BLUE, Color.GREEN, Color.PINK, Color.CYAN, Color.ORANGE};
+    int currentColor = 0;
+    int ballSize = 50;
 
     private KeyHandler kh;
 
@@ -74,6 +78,7 @@ public class Engine extends Canvas implements Runnable{
                 tick();
                 render();
 
+
                 delta-=1;
             }
 
@@ -83,6 +88,10 @@ public class Engine extends Canvas implements Runnable{
     }
     public void tick(){
 
+        if(tickCount % 60 == 0){
+            switchColor();
+        }
+
         if(keyHeld){
             //int x = rand.nextInt(WIDTH/2)+(WIDTH/4);
             int x = WIDTH/2;
@@ -90,7 +99,7 @@ public class Engine extends Canvas implements Runnable{
             //int y = rand.nextInt(HEIGHT/2)+(HEIGHT/4);
             int xVel = rand.nextInt(10)-5;
             int yVel = rand.nextInt(20)+10;
-            ballPit.add(new Ball(x, y, xVel, yVel));
+            ballPit.add(new Ball(x, y, xVel, yVel, ballSize, ca[currentColor]));
         }
         tickCount++;
         for(Iterator<Ball> iter = ballPit.iterator(); iter.hasNext();){
@@ -102,8 +111,19 @@ public class Engine extends Canvas implements Runnable{
         }
 
     }
+    public void incBallSize(){
+        ballSize++;
+    }
+    public void decBallSize(){
+        if(ballSize > 1){
+            ballSize--;
+        }
+    }
+    public void switchColor(){
+        this.currentColor = (currentColor + 1)% ca.length;
+    }
     public void renderBall(Ball b, Graphics g){
-        g.fillOval(WIDTH - b.getX(), HEIGHT - b.getY(), 50, 50);
+        g.fillOval(WIDTH - b.getX(), HEIGHT - b.getY(), b.getSize(), b.getSize());
     }
     public void render(){
         BufferStrategy bs = getBufferStrategy();
@@ -117,9 +137,11 @@ public class Engine extends Canvas implements Runnable{
         g.fillRect(0,0,getWidth(),getHeight());
 
 
-        g.setColor(Color.RED);
+
 
         for(Ball b: ballPit){
+            Color c = b.getColor();
+            g.setColor(c);
             renderBall(b, g);
         }
 

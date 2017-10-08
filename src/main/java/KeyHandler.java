@@ -17,6 +17,15 @@ public class KeyHandler implements KeyListener{
 
     @Override
     public void keyPressed(KeyEvent keyEvent) {
+        if(keyEvent.getKeyChar()=='q'){
+            engine.switchColor();
+        }
+        if(keyEvent.getKeyChar() == 'w'){
+            engine.incBallSize();
+        }
+        if(keyEvent.getKeyChar() == 's'){
+            engine.decBallSize();
+        }
         engine.keyHeld = true;
     }
 

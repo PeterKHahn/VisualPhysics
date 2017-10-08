@@ -1,3 +1,5 @@
+import java.awt.*;
+
 public class Ball {
 
     private int x;
@@ -7,12 +9,17 @@ public class Ball {
     private int yVel;
 
     private int yAcc = -1;
+    private int size;
 
-    public Ball(int x, int y, int xVel, int yVel){
+    private Color color;
+
+    public Ball(int x, int y, int xVel, int yVel, int size, Color color){
         this.x = x;
         this.y=y;
         this.xVel = xVel;
         this.yVel = yVel;
+        this.size = size;
+        this.color = color;
     }
 
     public int getX(){
@@ -21,6 +28,8 @@ public class Ball {
     public int getY(){
         return y;
     }
+    public Color getColor(){return color;}
+    public int getSize(){return size;}
 
     public void tick(){
         this.x += xVel;
