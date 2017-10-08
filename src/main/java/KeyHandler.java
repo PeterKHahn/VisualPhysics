@@ -3,11 +3,13 @@ import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener{
 
-    Engine engine;
+    private Engine engine;
+    private BallHandler ballHandler;
 
     public KeyHandler(Engine engine){
         this.engine = engine;
         engine.addKeyListener(this);
+        this.ballHandler = engine.getBallHandler();
     }
 
     @Override
@@ -18,19 +20,19 @@ public class KeyHandler implements KeyListener{
     @Override
     public void keyPressed(KeyEvent keyEvent) {
         if(keyEvent.getKeyChar()=='q'){
-            engine.switchColor();
+            ballHandler.switchColor();
         }
         if(keyEvent.getKeyChar() == 'w'){
-            engine.incBallSize();
+            ballHandler.incBallSize();
         }
         if(keyEvent.getKeyChar() == 's'){
-            engine.decBallSize();
+            ballHandler.decBallSize();
         }
-        engine.keyHeld = true;
+        ballHandler.keyHeld = true;
     }
 
     @Override
     public void keyReleased(KeyEvent keyEvent) {
-        engine.keyHeld = false;
+        ballHandler.keyHeld = false;
     }
 }

@@ -10,6 +10,7 @@ public class Ball {
 
     private int yAcc = -1;
     private int size;
+    private int radius;
 
     private Color color;
 
@@ -20,6 +21,7 @@ public class Ball {
         this.yVel = yVel;
         this.size = size;
         this.color = color;
+        this.radius = size/2;
     }
 
     public int getX(){
@@ -30,6 +32,7 @@ public class Ball {
     }
     public Color getColor(){return color;}
     public int getSize(){return size;}
+    public int getRadius(){return radius;}
 
     public void tick(){
         this.x += xVel;

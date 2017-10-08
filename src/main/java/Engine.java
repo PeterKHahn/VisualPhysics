@@ -10,18 +10,15 @@ import java.util.Random;
 
 public class Engine extends Canvas implements Runnable{
 
-    public static final int WIDTH = 1280;
-    public static final int HEIGHT = 720;
+    private static final int WIDTH = 1280;
+    private static final int HEIGHT = 720;
 
-    public boolean running = false;
+    private boolean running = false;
     private int tickCount = 0;
 
-    boolean keyHeld = false;
-    Color[]ca = {Color.RED, Color.BLUE, Color.GREEN, Color.PINK, Color.CYAN, Color.ORANGE};
-    int currentColor = 0;
-    int ballSize = 50;
 
     private KeyHandler kh;
+    private MouseHandler mh;
 
     private JFrame frame;
     private BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
@@ -29,6 +26,8 @@ public class Engine extends Canvas implements Runnable{
     private Random rand = new Random();
 
     private LinkedList<Ball>ballPit = new LinkedList<>();
+    private BallHandler ballHandler;
+
 
     public Engine(){
         setMinimumSize(new Dimension(WIDTH,HEIGHT));
@@ -47,7 +46,11 @@ public class Engine extends Canvas implements Runnable{
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
+        ballHandler = new BallHandler(WIDTH, HEIGHT, this);
+
+
         kh = new KeyHandler(this);
+        mh = new MouseHandler(this);
 
     }
     public synchronized void start(){
@@ -89,43 +92,20 @@ public class Engine extends Canvas implements Runnable{
     public void tick(){
 
         if(tickCount % 60 == 0){
-            switchColor();
-        }
-
-        if(keyHeld){
-            //int x = rand.nextInt(WIDTH/2)+(WIDTH/4);
-            int x = WIDTH/2;
-            int y = HEIGHT/2;
-            //int y = rand.nextInt(HEIGHT/2)+(HEIGHT/4);
-            int xVel = rand.nextInt(10)-5;
-            int yVel = rand.nextInt(20)+10;
-            ballPit.add(new Ball(x, y, xVel, yVel, ballSize, ca[currentColor]));
+            ballHandler.switchColor();
         }
         tickCount++;
-        for(Iterator<Ball> iter = ballPit.iterator(); iter.hasNext();){
-            Ball b = iter.next();
-            b.tick();
-            if(b.getX() > WIDTH + 100 || b.getX() < -100 || b.getY() > HEIGHT + 100 || b.getY() < -100){
-                iter.remove();
-            }
-        }
+        ballHandler.tick();
 
     }
-    public void incBallSize(){
-        ballSize++;
+    BallHandler getBallHandler(){
+        return ballHandler;
     }
-    public void decBallSize(){
-        if(ballSize > 1){
-            ballSize--;
-        }
-    }
-    public void switchColor(){
-        this.currentColor = (currentColor + 1)% ca.length;
-    }
-    public void renderBall(Ball b, Graphics g){
+
+    private void renderBall(Ball b, Graphics g){
         g.fillOval(WIDTH - b.getX(), HEIGHT - b.getY(), b.getSize(), b.getSize());
     }
-    public void render(){
+    private void render(){
         BufferStrategy bs = getBufferStrategy();
         if (bs == null){
             createBufferStrategy(3);
@@ -139,7 +119,7 @@ public class Engine extends Canvas implements Runnable{
 
 
 
-        for(Ball b: ballPit){
+        for(Ball b: ballHandler.getBallPit()){
             Color c = b.getColor();
             g.setColor(c);
             renderBall(b, g);
@@ -148,6 +128,10 @@ public class Engine extends Canvas implements Runnable{
         g.dispose();
         bs.show();
     }
+    Random rand(){
+        return rand;
+    }
+
 
     public static void main(String[]args){
         System.setProperty("sun.java2d.opengl", "true");
