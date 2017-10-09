@@ -3,7 +3,6 @@ import java.awt.*;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -35,12 +34,14 @@ public class Engine extends Canvas implements Runnable{
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
         frame = new JFrame("Physics Engine");
+        frame.addWindowListener(new WindowHandler(frame, this));
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
 
         frame.add(this, BorderLayout.CENTER);
         frame.pack();
+
 
         frame.setResizable(true);
         frame.setLocationRelativeTo(null);
@@ -59,6 +60,8 @@ public class Engine extends Canvas implements Runnable{
     }
     public synchronized void stop(){
         running = false;
+        ballHandler.saveBallShow();
+
     }
 
     public void run(){
@@ -87,11 +90,12 @@ public class Engine extends Canvas implements Runnable{
 
 
         }
+        System.out.println("");
 
     }
     public void tick(){
 
-        if(tickCount % 60 == 0){
+        if(tickCount() % 60 == 0){
             ballHandler.switchColor();
         }
         tickCount++;
@@ -128,6 +132,9 @@ public class Engine extends Canvas implements Runnable{
         g.dispose();
         bs.show();
     }
+    public int tickCount(){
+        return tickCount;
+    }
     Random rand(){
         return rand;
     }
@@ -135,6 +142,9 @@ public class Engine extends Canvas implements Runnable{
 
     public static void main(String[]args){
         System.setProperty("sun.java2d.opengl", "true");
-        new Engine().start();
+        Engine e = new Engine();
+        e.start();
+        //e.stop();
+
     }
 }

@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.io.File;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -7,6 +8,7 @@ public class BallHandler {
     private final int width;
     private final int height;
     private Engine engine;
+    private BallShow ballShow;
 
     boolean keyHeld = false;
 
@@ -25,6 +27,7 @@ public class BallHandler {
         this.engine = engine;
         this.ballX = width/2;
         this.ballY = height/2;
+        ballShow = new BallShow(new File("First-BallTest.txt"));
     }
     public void tick(){
         if(keyHeld){
@@ -34,6 +37,8 @@ public class BallHandler {
             int xVel = engine.rand().nextInt(10)-5;
             int yVel = engine.rand().nextInt(20)+10;
             ballPit.add(new Ball(ballX, ballY, xVel, yVel, ballSize, ca[currentColor]));
+            ballShow.addBall(new BallRecord(engine.tickCount(), ballX, ballY, xVel, yVel, ballSize, currentColor));
+
         }
         for(Iterator<Ball> iter = ballPit.iterator(); iter.hasNext();){
             Ball b = iter.next();
@@ -61,6 +66,9 @@ public class BallHandler {
     public void setBallOrigin(int x, int y){
         this.ballX = x;
         this.ballY = y;
+    }
+    public void saveBallShow(){
+        ballShow.saveShow();
     }
 
 
